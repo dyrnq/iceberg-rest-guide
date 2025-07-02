@@ -35,3 +35,8 @@ mc                       minio/mc                                         "/bin/
 gravitino.iceberg-rest.foo ---> foo-postgres(db=iceberg_rest) ---> foo-minio/warehouse
 gravitino.iceberg-rest.bar ---> bar-postgres(db=iceberg_rest) ---> bar-minio/warehouse
 ```
+
+
+spark version [sample/IcebergRestMultiSupportSimple.scala](https://github.com/dyrnq/spark-scala-example/blob/main/src/main/scala/sample/IcebergRestMultiSupportSimple.scala)
+
+flink version [sample/IcebergRestCatalogMultiSupport.scala](https://github.com/dyrnq/flink-coding/blob/main/src/main/scala/sample/IcebergRestCatalogMultiSupport.scala)
