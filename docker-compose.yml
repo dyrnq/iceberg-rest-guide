@@ -1,0 +1,137 @@
+services:
+  foo-minio:
+    image: minio/minio
+    restart: always
+    container_name: foo-minio
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    networks:
+      iceberg_net:
+    ports:
+      - 9001:9001
+      - 9000:9000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - foo_minio_data:/data
+    command: ["server", "/data", "--console-address", ":9001"]
+
+
+  bar-minio:
+    image: minio/minio
+    restart: always
+    container_name: bar-minio
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    networks:
+      iceberg_net:
+    ports:
+      - 9201:9001
+      - 9200:9000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - bar_minio_data:/data
+    command: ["server", "/data", "--console-address", ":9001"]
+
+
+  foo-postgres:
+    image: postgres:12.14
+    restart: always
+    container_name: foo-postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=666666
+      - POSTGRES_DB=iceberg_rest
+    networks:
+      iceberg_net:
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U postgres -d iceberg_rest'"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - foo_postgres_data:/var/lib/postgresql/data
+
+  bar-postgres:
+    image: postgres:12.14
+    restart: always
+    container_name: bar-postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=666666
+      - POSTGRES_DB=iceberg_rest
+    networks:
+      iceberg_net:
+    ports:
+      - 25432:5432
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U postgres -d iceberg_rest'"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - bar_postgres_data:/var/lib/postgresql/data
+
+
+  gravitino-iceberg-rest:
+    # https://hub.docker.com/r/apache/gravitino-iceberg-rest/tags
+    image: apache/gravitino-iceberg-rest:0.9.0-incubating
+    container_name: gravitino-iceberg-rest
+    depends_on:
+      foo-postgres:
+        condition: service_healthy
+      bar-postgres:
+        condition: service_healthy
+      foo-minio:
+        condition: service_healthy
+      bar-minio:
+        condition: service_healthy
+    ports:
+      - 29001:9001
+    entrypoint: /gravitino-iceberg-rest.sh
+    volumes:
+      - ./gravitino-iceberg-rest/gravitino-iceberg-rest.sh:/gravitino-iceberg-rest.sh
+      - ./gravitino-iceberg-rest/gravitino-iceberg-rest-server.conf:/root/gravitino-iceberg-rest-server/gravitino-iceberg-rest-server.conf
+
+  mc:
+    image: minio/mc
+    container_name: mc
+    networks:
+      iceberg_net:
+    depends_on:
+      foo-minio:
+        condition: service_healthy
+      bar-minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc alias set foo-minio http://foo-minio:9000 minioadmin minioadmin;
+      /usr/bin/mc admin user svcacct add --access-key "vUR3oLMF5ds8gWCP" --secret-key "odWFIZukYrw9dY0G5ezDKMZWbhU0S4oD" foo-minio minioadmin 2>/dev/null || true;
+      /usr/bin/mc alias set bar-minio http://bar-minio:9000 minioadmin minioadmin;
+      /usr/bin/mc admin user svcacct add --access-key "vUR3oLMF5ds8gWCP" --secret-key "odWFIZukYrw9dY0G5ezDKMZWbhU0S4oD" bar-minio minioadmin 2>/dev/null || true;
+
+      sleep 5s;
+      /usr/bin/mc mb foo-minio/warehouse 2>/dev/null || true;
+      /usr/bin/mc mb bar-minio/warehouse 2>/dev/null || true;
+      tail -f /dev/null
+      "
+networks:
+  iceberg_net:
+    external: true
+
+volumes:
+  foo_minio_data:
+  bar_minio_data:
+  foo_postgres_data:
+  bar_postgres_data:
