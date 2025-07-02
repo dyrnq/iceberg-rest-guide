@@ -11,11 +11,17 @@ run
 see docker-compose.yml,there are two minio(foo- and bar-) and two postgres(foo- and bar-)
 
 ```bash
+    image: minio/minio
     container_name: foo-minio
+    image: minio/minio
     container_name: bar-minio
+    image: postgres:12.14
     container_name: foo-postgres
+    image: postgres:12.14
     container_name: bar-postgres
+    image: apache/gravitino-iceberg-rest:0.9.0-incubating
     container_name: gravitino-iceberg-rest
+    image: minio/mc
     container_name: mc
 ```
 
