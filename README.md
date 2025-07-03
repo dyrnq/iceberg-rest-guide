@@ -46,3 +46,6 @@ gravitino.iceberg-rest.bar ---> bar-postgres(db=iceberg_rest) ---> bar-minio/war
 spark version [sample/IcebergRestMultiSupportSimple.scala](https://github.com/dyrnq/spark-scala-example/blob/main/src/main/scala/sample/IcebergRestMultiSupportSimple.scala)
 
 flink version [sample/IcebergRestCatalogMultiSupport.scala](https://github.com/dyrnq/flink-coding/blob/main/src/main/scala/sample/IcebergRestCatalogMultiSupport.scala)
+
+
+Of course, we can also use multiple gravitino.iceberg-rest instances for multi-catalog.
