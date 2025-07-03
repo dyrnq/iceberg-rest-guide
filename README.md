@@ -48,4 +48,4 @@ spark version [sample/IcebergRestMultiSupportSimple.scala](https://github.com/dy
 flink version [sample/IcebergRestCatalogMultiSupport.scala](https://github.com/dyrnq/flink-coding/blob/main/src/main/scala/sample/IcebergRestCatalogMultiSupport.scala)
 
 
-Of course, we can also use multiple gravitino.iceberg-rest instances for multi-catalog.
+Of course, we can also use multiple gravitino-iceberg-rest-server instances for multi-catalog.
