@@ -91,9 +91,10 @@ services:
   gravitino-iceberg-rest:
     # https://hub.docker.com/r/apache/gravitino-iceberg-rest/tags
     image: apache/gravitino-iceberg-rest:0.9.0-incubating
+    restart: always
     container_name: gravitino-iceberg-rest
     networks:
-      iceberg_net:    
+      iceberg_net:
     depends_on:
       foo-postgres:
         condition: service_healthy
@@ -103,6 +104,11 @@ services:
         condition: service_healthy
       bar-minio:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:9001/iceberg/v1/config"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
     ports:
       - 29001:9001
     entrypoint: /gravitino-iceberg-rest.sh
