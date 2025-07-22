@@ -90,7 +90,7 @@ services:
 
   gravitino-iceberg-rest:
     # https://hub.docker.com/r/apache/gravitino-iceberg-rest/tags
-    image: apache/gravitino-iceberg-rest:0.9.0-incubating
+    image: apache/gravitino-iceberg-rest:0.9.1
     restart: always
     container_name: gravitino-iceberg-rest
     networks:
