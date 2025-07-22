@@ -1,6 +1,6 @@
 # iceberg-rest-guide
 
-this project is POC of gravitino iceberg-rest-server multi-catalog-support. see <https://gravitino.apache.org/docs/0.9.0-incubating/iceberg-rest-service/#multi-catalog-support>.
+this project is POC of gravitino iceberg-rest-server multi-catalog-support. see <https://gravitino.apache.org/docs/0.9.1/iceberg-rest-service/#multi-catalog-support>.
 
 run
 
@@ -19,7 +19,7 @@ see docker-compose.yml,there are two minio(foo- and bar-) and two postgres(foo- 
     container_name: foo-postgres
     image: postgres:12.14
     container_name: bar-postgres
-    image: apache/gravitino-iceberg-rest:0.9.0-incubating
+    image: apache/gravitino-iceberg-rest:0.9.1
     container_name: gravitino-iceberg-rest
     image: minio/mc
     container_name: mc
@@ -32,7 +32,7 @@ bar-minio                minio/minio                                      "/usr/
 bar-postgres             postgres:12.14                                   "docker-entrypoint.s…"   bar-postgres             17 seconds ago   Up 17 seconds (healthy)   0.0.0.0:25432->5432/tcp
 foo-minio                minio/minio                                      "/usr/bin/docker-ent…"   foo-minio                17 seconds ago   Up 17 seconds (healthy)   0.0.0.0:9000-9001->9000-9001/tcp
 foo-postgres             postgres:12.14                                   "docker-entrypoint.s…"   foo-postgres             17 seconds ago   Up 17 seconds (healthy)   0.0.0.0:5432->5432/tcp
-gravitino-iceberg-rest   apache/gravitino-iceberg-rest:0.9.0-incubating   "/gravitino-iceberg-…"   gravitino-iceberg-rest   17 seconds ago   Up 6 seconds              0.0.0.0:29001->9001/tcp
+gravitino-iceberg-rest   apache/gravitino-iceberg-rest:0.9.1              "/gravitino-iceberg-…"   gravitino-iceberg-rest   17 seconds ago   Up 6 seconds              0.0.0.0:29001->9001/tcp
 mc                       minio/mc                                         "/bin/sh -c ' /usr/b…"   mc                       17 seconds ago   Up 11 seconds             
 ```
 
